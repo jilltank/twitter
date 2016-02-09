@@ -1,0 +1,28 @@
+<h1><%= current_user.name %>'s Twitter Feed</h1>
+
+<%= form_for(Tweet.new) do |f| %>
+	<div class="field">
+	  <%= f.hidden_field :user_id, value: current_user.id %>
+	</div>
+	<div class="field">
+	  <%= f.text_area :message, placeholder: "Tweet to your followers! 140 characters max", rows: "5" %>
+	</div>
+	<div class="actions">
+	  <%= f.submit class: "btn btn-info"  %>
+	</div>
+<% end %>
+
+<h3>Your Friends Are Tweeting</h3>
+
+<div class="row">
+	<% @following_tweets.sort_by {:created_at} %>
+	<% @following_tweets.each do |tweet| %>
+		<div class="col-md-3">
+			<p><%= Time.now.strftime("%I:%M%p").to_i-tweet.created_at.strftime("%I:%M%p").to_i %>hrs ago</p>
+			<p class="message">"<%= tweet.message %>"</p>
+			<% x = User.find(tweet) %>
+			<p><em><%= link_to "@#{x.username}", show_user_path(id:x) %></em></p>
+		</div>
+	<% end %>
+</div>
+

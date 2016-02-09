@@ -1,0 +1,54 @@
+<h1><%= @user.name %>'s Profile</h1>
+<div class="row">
+	<div class="col-md-4">
+		<p class="tweet">User Information</p>
+		<p>Name: <%= @user.name %></p>
+		<p>Location: <%= @user.location %></p>
+		<p>Bio: <%= @user.bio %></p>
+		<p> 
+			<% if current_user != @user %>
+				<% if current_user.following.include?(@user.id) %>
+					<%= link_to unfollow_path(id: @user.id) do %><button class: "btn btn-danger"><i class="fa fa-twitter"></i>Unfollow</button><% end %>
+				<% else %>
+					<%= link_to now_following_path(id: @user.id) do %><button class: "btn btn-info"><i class="fa fa-twitter"></i>Follow</button><% end %>
+				<% end %>
+			<% else %>
+				<%= link_to "Edit Your Profile", edit_user_registration_path %>
+			<% end %>
+		</p>
+	</div>
+
+	<div class="col-md-4">
+		<p class="tweet">Currently Following:</p>
+		<% @user.following.each do |u| %>
+			<p>
+				<% x = User.find(u) %>
+				<%= link_to "@#{x.username}", show_user_path(id:x) %>
+			</p>
+		<% end %>
+	</div>
+
+</div>
+
+<h1><%= @user.name %>'s Tweets</h1>
+	<% if current_user == @user %>
+		<%= form_for(Tweet.new) do |f| %>
+			<div class="field">
+			  <%= f.hidden_field :user_id, value: current_user.id %>
+			</div>
+			<div class="field">
+			  <%= f.text_area :message, placeholder: "Tweet to your followers! 140 characters max", rows: "5" %>
+			</div>
+			<div class="actions">
+			  <%= f.submit class: "btn btn-info"  %>
+			</div>
+		<% end %>
+	<% end %>
+
+	<% @user.tweets.each do |t| %>
+		<div class="col-md-8">
+			<p><%= Time.now.strftime("%I:%M%p").to_i-t.created_at.strftime("%H").to_i %>hrs ago</p>
+			<p class="message">"<%= t.message %>"</p>
+			<em><p>@<%= t.user.username %></p></em>
+		</div>
+	<% end %>

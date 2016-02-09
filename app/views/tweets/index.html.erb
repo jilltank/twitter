@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<h1>All Tweets</h1>
+
+<div class="row">
+    <% @tweets.each do |tweet| %>
+      <div class="col-md-4">
+        <p><%= Time.now.strftime("%H").to_i-tweet.created_at.strftime("%H").to_i %>hrs ago</p>
+        <p class="message">"<%= tweet.message %>"</p>
+        <% x = User.find(tweet.user_id) %>
+        <em><%= link_to "@#{x.username}", show_user_path(id:x) %></em>
+      </div>
+    <% end %>
+  </div>
+
+<br>
+
+<p><%= link_to 'New Tweet', new_tweet_path, class: "btn btn-info" %></p>
